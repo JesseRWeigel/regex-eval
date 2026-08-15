@@ -35,10 +35,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS = os.path.join(ROOT, "results")
 HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 NUM_CTX = 8192
-NUM_PREDICT = 1024
 
 
-def call(model: str, text: str, seed: int, think, temperature: float) -> dict:
+def call(model: str, text: str, seed: int, think, temperature: float,
+         num_predict: int) -> dict:
     body = {
         "model": model,
         "prompt": text,
@@ -48,7 +48,7 @@ def call(model: str, text: str, seed: int, think, temperature: float) -> dict:
             "temperature": temperature,
             "seed": seed,
             "num_ctx": NUM_CTX,          # only this changes the loaded context, see the docstring
-            "num_predict": NUM_PREDICT,
+            "num_predict": num_predict,
         },
     }
     request = urllib.request.Request(
@@ -65,6 +65,9 @@ def main() -> int:
     parser.add_argument("--samples", type=int, default=3)
     parser.add_argument("--think", default="false", choices=["false", "true"])
     parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument("--num-predict", type=int, default=1024,
+                        help="raise this for a think=true arm, where reasoning tokens "
+                             "come out of the same budget and can swallow the answer")
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
 
@@ -84,7 +87,8 @@ def main() -> int:
                 text = prompt.build(task)
                 seed = 1000 + sample
                 try:
-                    reply = call(args.model, text, seed, think, args.temperature)
+                    reply = call(args.model, text, seed, think, args.temperature,
+                                 args.num_predict)
                 except urllib.error.HTTPError as error:
                     detail = error.read().decode("utf-8", "replace")[:400]
                     print(f"HTTP {error.code} on {task.id}: {detail}")
@@ -96,6 +100,7 @@ def main() -> int:
                     "seed": seed,
                     "temperature": args.temperature,
                     "num_ctx": NUM_CTX,
+                    "num_predict": args.num_predict,
                     "task": task.id,
                     "prompt": text,
                     "response": reply.get("response", ""),

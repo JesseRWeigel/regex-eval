@@ -111,7 +111,7 @@
       "kind": "normal",
       "requirement": "Match a whole string that consists of exactly one double quoted segment: one double quote character, then zero or more characters that are not double quotes, then one closing double quote. Nothing may appear before the opening quote or after the closing quote.",
       "reference": "\\A\"[^\"]*\"\\Z",
-      "naive_pattern": "\".*\"",
+      "naive_pattern": "^\".*\"$",
       "cases": [
         {"s": "\"hello\"", "match": true, "trap": "plain", "naive": true},
         {"s": "\"multi word here\"", "match": true, "trap": "plain", "naive": true},
