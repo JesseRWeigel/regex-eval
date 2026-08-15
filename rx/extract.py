@@ -15,11 +15,15 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-REGEX_LINE = re.compile(r"^[ \t>*_-]*(?:\*\*)?REGEX(?:\*\*)?[ \t]*:[ \t]*(.*)$", re.MULTILINE)
-IMPOSSIBLE_LINE = re.compile(r"^[ \t>*_-]*(?:\*\*)?IMPOSSIBLE(?:\*\*)?[ \t]*:[ \t]*(.*)$",
-                             re.MULTILINE)
+# The trailing (?:\*\*[ \t]*)? catches `**REGEX:** ^a$`, where the bold run closes after the
+# colon. A pattern cannot begin with `**` anyway, since that is not a valid quantifier.
+REGEX_LINE = re.compile(r"^[ \t>*_-]*(?:\*\*)?REGEX(?:\*\*)?[ \t]*:[ \t]*(?:\*\*[ \t]*)?(.*)$",
+                        re.MULTILINE)
+IMPOSSIBLE_LINE = re.compile(
+    r"^[ \t>*_-]*(?:\*\*)?IMPOSSIBLE(?:\*\*)?[ \t]*:[ \t]*(?:\*\*[ \t]*)?(.*)$", re.MULTILINE)
 
-WRAPPERS = (("`", "`"), ('"', '"'), ("'", "'"), ("r'", "'"), ('r"', '"'), ("/", "/"))
+WRAPPERS = (("`", "`"), ('"', '"'), ("'", "'"), ("r'", "'"), ('r"', '"'), ("/", "/"),
+            ("**", "**"))
 
 
 def compiles(pattern: str) -> bool:
@@ -31,13 +35,22 @@ def compiles(pattern: str) -> bool:
 
 
 def unwrap(text: str) -> str:
-    """Remove at most one decorative wrapper, and only if what is left still compiles."""
+    """Remove decorative wrappers, conservatively.
+
+    A wrapper comes off only when what is left still compiles AND the closing character does not
+    also occur inside. That second condition is what protects the quoted-string task, where
+    `"[^"]*"` is a pattern about quotes rather than a quoted pattern. Removing the outer quotes
+    there would leave `[^"]*`, a different and silently wrong regex, and the model would be graded
+    on a pattern it never wrote.
+    """
     stripped = text.strip()
     for _ in range(3):
         for opener, closer in WRAPPERS:
             if (len(stripped) > len(opener) + len(closer)
                     and stripped.startswith(opener) and stripped.endswith(closer)):
                 inner = stripped[len(opener):-len(closer)].strip()
+                if inner and closer[-1] in inner:
+                    continue
                 if inner and compiles(inner):
                     stripped = inner
                     break
