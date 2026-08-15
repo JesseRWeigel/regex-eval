@@ -1,0 +1,108 @@
+<title>Regex against executable ground truth</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #fbfbfa; --fg: #1a1a1a; --muted: #5c5c5c; --line: #d9d7d2;
+  --card: #ffffff; --accent: #8a3324; --good: #1f6f43;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161a; --fg: #e9e7e3; --muted: #a3a19c; --line: #2e3238;
+    --card: #1b1e23; --accent: #e2825f; --good: #63c48c;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14161a; --fg: #e9e7e3; --muted: #a3a19c; --line: #2e3238;
+  --card: #1b1e23; --accent: #e2825f; --good: #63c48c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 2rem 1.25rem 4rem; background: var(--bg); color: var(--fg);
+  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 60rem; margin: 0 auto; }
+h1 { font-size: 1.7rem; margin: 0 0 .3rem; letter-spacing: -.01em; }
+h2 { font-size: 1.05rem; margin: 2.4rem 0 .7rem; text-transform: uppercase;
+     letter-spacing: .08em; color: var(--muted); }
+p { margin: .6rem 0; max-width: 46rem; }
+.lede { font-size: 1.1rem; }
+.big { font-size: 2.6rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+.cards { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+        padding: 1rem 1.1rem; }
+.card .label { color: var(--muted); font-size: .82rem; text-transform: uppercase;
+               letter-spacing: .06em; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px;
+          background: var(--card); }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; min-width: 34rem; }
+th, td { text-align: right; padding: .5rem .7rem; border-bottom: 1px solid var(--line);
+         white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase;
+     letter-spacing: .05em; }
+tr:last-child td { border-bottom: 0; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em;
+       background: color-mix(in srgb, var(--fg) 8%, transparent); padding: .1em .35em;
+       border-radius: 4px; }
+.bar { display: inline-block; height: .62rem; background: var(--accent); border-radius: 3px;
+       vertical-align: middle; }
+footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; }
+a { color: var(--accent); }
+</style>
+<main>
+<h1>Regex against executable ground truth</h1>
+<p class="lede">Models were asked for a regular expression for a stated requirement. Each answer
+was graded by <strong>running it</strong> over a corpus of labelled strings held back from the
+prompt, with no judge model and no comparison against a reference pattern.</p>
+
+<h2>The headline</h2>
+<p class="big">40%</p>
+<p>of the regexes that are correct on the obvious cases are wrong on the held-out ones.
+That is 33 of 82 responses,
+95% CI 30 to 51. Overall
+49 of 99 answers to solvable tasks were correct on
+every case.</p>
+
+<div class="cards">
+  <div class="card"><div class="label">tasks</div><div>12, including one easy
+    control and one contradictory control</div></div>
+  <div class="card"><div class="label">corpus cases</div><div>168 labelled
+    strings, none shown to the model</div></div>
+  <div class="card"><div class="label">responses</div><div>108 across
+    3 arms of a local Ollama</div></div>
+</div>
+
+<h2>By arm</h2>
+<div class="scroll"><table>
+<tr><th>arm</th><th>solvable correct</th><th></th><th>looked right, was wrong</th><th></th>
+<th>easy control</th><th>refused the contradiction</th><th>timeouts</th><th>invalid</th></tr>
+<tr><td>gemma4:e4b think=False</td><td>16 / 33</td><td>48%</td><td>13 / 29</td><td>45%</td><td>3 / 3</td><td>0 / 3</td><td>0</td><td>0</td></tr><tr><td>gpt-oss:20b think=False</td><td>28 / 33</td><td>85%</td><td>4 / 32</td><td>12%</td><td>3 / 3</td><td>0 / 3</td><td>0</td><td>0</td></tr><tr><td>qwen3.5:9b think=False</td><td>5 / 33</td><td>15%</td><td>16 / 21</td><td>76%</td><td>3 / 3</td><td>0 / 3</td><td>0</td><td>0</td></tr>
+</table></div>
+
+<h2>Where the regexes break</h2>
+<p>Every corpus case carries a tag for the kind of mistake it is designed to catch. This is the
+error rate per case, over regexes that compiled and ran.</p>
+<div class="scroll"><table>
+<tr><th>case type</th><th>wrong</th><th>rate</th><th></th></tr>
+<tr><td>contradiction</td><td>18 / 18</td><td>100.0%</td><td><span class="bar" style="width:9.00rem"></span></td></tr><tr><td>trailing-newline</td><td>8 / 9</td><td>88.9%</td><td><span class="bar" style="width:8.00rem"></span></td></tr><tr><td>unicode-digit</td><td>7 / 9</td><td>77.8%</td><td><span class="bar" style="width:7.00rem"></span></td></tr><tr><td>leading-zero</td><td>14 / 54</td><td>25.9%</td><td><span class="bar" style="width:2.33rem"></span></td></tr><tr><td>unicode-letter</td><td>2 / 9</td><td>22.2%</td><td><span class="bar" style="width:2.00rem"></span></td></tr><tr><td>greedy</td><td>4 / 36</td><td>11.1%</td><td><span class="bar" style="width:1.00rem"></span></td></tr><tr><td>plain</td><td>37 / 342</td><td>10.8%</td><td><span class="bar" style="width:0.97rem"></span></td></tr><tr><td>boundary</td><td>32 / 387</td><td>8.3%</td><td><span class="bar" style="width:0.74rem"></span></td></tr><tr><td>negation</td><td>7 / 108</td><td>6.5%</td><td><span class="bar" style="width:0.58rem"></span></td></tr><tr><td>class-boundary</td><td>7 / 135</td><td>5.2%</td><td><span class="bar" style="width:0.47rem"></span></td></tr><tr><td>length</td><td>4 / 135</td><td>3.0%</td><td><span class="bar" style="width:0.27rem"></span></td></tr><tr><td>anchor</td><td>7 / 270</td><td>2.6%</td><td><span class="bar" style="width:0.23rem"></span></td></tr>
+</table></div>
+
+<h2>By task</h2>
+<div class="scroll"><table>
+<tr><th>task</th><th>passed</th><th>rate</th><th></th></tr>
+<tr><td>contradiction</td><td>0 / 9</td><td>0%</td><td>impossible control</td></tr><tr><td>decimal</td><td>6 / 9</td><td>67%</td><td></td></tr><tr><td>hexcolor</td><td>6 / 9</td><td>67%</td><td></td></tr><tr><td>identifier</td><td>3 / 9</td><td>33%</td><td></td></tr><tr><td>ipv4</td><td>1 / 9</td><td>11%</td><td></td></tr><tr><td>literal</td><td>9 / 9</td><td>100%</td><td>easy control</td></tr><tr><td>nodash</td><td>2 / 9</td><td>22%</td><td></td></tr><tr><td>quoted</td><td>5 / 9</td><td>56%</td><td></td></tr><tr><td>semver</td><td>5 / 9</td><td>56%</td><td></td></tr><tr><td>time24</td><td>6 / 9</td><td>67%</td><td></td></tr><tr><td>words</td><td>4 / 9</td><td>44%</td><td></td></tr><tr><td>zip</td><td>2 / 9</td><td>22%</td><td></td></tr>
+</table></div>
+
+<h2>Threats to validity</h2>
+<p>The corpora are written by one person and encode one reading of each requirement, so a
+disagreement about the requirement scores as a model error. Sampling is three draws per task per
+arm at temperature 0.7, which is enough to show a rate and not enough to separate arms that sit
+close together. The models are small local ones, so the numbers describe them and not the frontier.
+Two tasks carry a trap that is arguably a Python detail rather than a regex error, <code>\d</code>
+matching non-ASCII digits and <code>$</code> matching before a trailing newline, and the case type
+table breaks those out so they can be discounted.</p>
+
+<footer>Generated by <code>scripts/build_docs.py</code> from the raw run records. Task EVAL-019 of
+a public catalog of build ideas.</footer>
+</main>
