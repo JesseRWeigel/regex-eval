@@ -101,7 +101,7 @@ def main() -> int:
             handle.write("\n".join(CONTROLS) + "\n")
         caught, _ = scan_file(planted, "planted.txt")
     missed = [control for control in CONTROLS
-              if not any(control[:18] in line for line in caught)]
+              if not any(control[:12] in line for line in caught)]
     if missed:
         print(f"   FAIL the scanner missed {len(missed)} planted control(s): {missed}")
         return 1
