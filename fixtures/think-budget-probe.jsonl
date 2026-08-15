@@ -1,0 +1,4 @@
+{"model": "qwen3.5:9b", "think": true, "task": "zip", "num_predict": 4096, "response": "", "thinking_chars": 15861, "done_reason": "length", "eval_count": 4096}
+{"model": "qwen3.5:9b", "think": true, "task": "time24", "num_predict": 4096, "response": "", "thinking_chars": 12885, "done_reason": "length", "eval_count": 4096}
+{"model": "qwen3.5:9b", "think": true, "task": "ipv4", "num_predict": 4096, "response": "", "thinking_chars": 14503, "done_reason": "length", "eval_count": 4096}
+{"model": "qwen3.5:9b", "think": true, "task": "semver", "num_predict": 4096, "response": "", "thinking_chars": 13965, "done_reason": "length", "eval_count": 4096}
