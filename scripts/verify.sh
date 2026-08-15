@@ -110,6 +110,33 @@ print(f"   {len(paths)} arms, {total} recorded responses: {', '.join(notes)}")
 EOF
 check $?
 
+step "the reasoning-budget probe backs the claim made about it in the README"
+"$PY" - <<'EOF'
+import json, os, sys
+path = os.path.join("fixtures", "think-budget-probe.jsonl")
+if not os.path.exists(path):
+    print(f"   FAIL {path} is missing, so the README's claim about the reasoning channel has "
+          f"no evidence behind it")
+    sys.exit(1)
+with open(path, encoding="utf-8") as handle:
+    records = [json.loads(line) for line in handle if line.strip()]
+if len(records) < 3:
+    print(f"   FAIL only {len(records)} probe record(s)")
+    sys.exit(1)
+if not all(record["think"] for record in records):
+    print("   FAIL the probe is supposed to have the reasoning channel ON")
+    sys.exit(1)
+truncated = [r for r in records if r["done_reason"] == "length" and not r["response"].strip()]
+readme = open("README.md", encoding="utf-8").read()
+claim = f"{len(truncated)} of {len(records)}"
+if claim not in readme:
+    print(f"   FAIL the README does not state the probe result {claim!r}")
+    sys.exit(1)
+print(f"   {len(truncated)} of {len(records)} probe calls spent the whole token budget reasoning "
+      f"and returned an empty answer, and the README says so")
+EOF
+check $?
+
 step "unit tests, including the corpus labels and the timeout guard"
 "$PY" -m unittest discover -s tests 2>&1 | tail -3
 check "${PIPESTATUS[0]}"

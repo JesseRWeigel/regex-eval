@@ -1,0 +1,254 @@
+{
+  "arms": {
+    "gemma4:e4b think=False": {
+      "easy_n": 3,
+      "easy_pass": 3,
+      "false_refusal": 0,
+      "illusion_ci": [
+        0.28413168023037194,
+        0.6245203678902909
+      ],
+      "illusion_rate": 0.4482758620689655,
+      "impossible_n": 3,
+      "impossible_refused": 0,
+      "invalid": 0,
+      "n": 36,
+      "naive_pass_full_fail": 13,
+      "naive_subset_pass": 29,
+      "outcomes": {
+        "fail": 20,
+        "pass": 16
+      },
+      "solvable_n": 33,
+      "solvable_pass": 16,
+      "solvable_pass_ci": [
+        0.32504042108133696,
+        0.6478162455108585
+      ],
+      "solvable_pass_rate": 0.48484848484848486,
+      "timeouts": 0
+    },
+    "gpt-oss:20b think=False": {
+      "easy_n": 1,
+      "easy_pass": 1,
+      "false_refusal": 0,
+      "illusion_ci": [
+        0.04558726080970055,
+        0.6993581574175981
+      ],
+      "illusion_rate": 0.25,
+      "impossible_n": 1,
+      "impossible_refused": 0,
+      "invalid": 0,
+      "n": 5,
+      "naive_pass_full_fail": 1,
+      "naive_subset_pass": 4,
+      "outcomes": {
+        "fail": 2,
+        "pass": 3
+      },
+      "solvable_n": 4,
+      "solvable_pass": 3,
+      "solvable_pass_ci": [
+        0.30064184258240184,
+        0.9544127391902995
+      ],
+      "solvable_pass_rate": 0.75,
+      "timeouts": 0
+    },
+    "qwen3.5:9b think=False": {
+      "easy_n": 3,
+      "easy_pass": 3,
+      "false_refusal": 0,
+      "illusion_ci": [
+        0.5490882631704924,
+        0.8937198697736354
+      ],
+      "illusion_rate": 0.7619047619047619,
+      "impossible_n": 3,
+      "impossible_refused": 0,
+      "invalid": 0,
+      "n": 36,
+      "naive_pass_full_fail": 16,
+      "naive_subset_pass": 21,
+      "outcomes": {
+        "fail": 31,
+        "pass": 5
+      },
+      "solvable_n": 33,
+      "solvable_pass": 5,
+      "solvable_pass_ci": [
+        0.06650457281607568,
+        0.3091987588044212
+      ],
+      "solvable_pass_rate": 0.15151515151515152,
+      "timeouts": 0
+    }
+  },
+  "meta": {
+    "arms": 3,
+    "corpus_cases": 168,
+    "responses": 77,
+    "tasks": 12
+  },
+  "overall": {
+    "illusion_ci": [
+      0.42375646526775257,
+      0.6799753582777035
+    ],
+    "illusion_rate": 0.5555555555555556,
+    "naive_pass_full_fail": 30,
+    "naive_subset_pass": 54,
+    "responses": 77,
+    "solvable_n": 70,
+    "solvable_pass": 24
+  },
+  "tasks": {
+    "contradiction": {
+      "kind": "control_impossible",
+      "n": 7,
+      "pass": 0,
+      "pass_rate": 0.0,
+      "refused": 0
+    },
+    "decimal": {
+      "kind": "normal",
+      "n": 6,
+      "pass": 3,
+      "pass_rate": 0.5,
+      "refused": 0
+    },
+    "hexcolor": {
+      "kind": "normal",
+      "n": 7,
+      "pass": 4,
+      "pass_rate": 0.5714285714285714,
+      "refused": 0
+    },
+    "identifier": {
+      "kind": "normal",
+      "n": 6,
+      "pass": 0,
+      "pass_rate": 0.0,
+      "refused": 0
+    },
+    "ipv4": {
+      "kind": "normal",
+      "n": 6,
+      "pass": 0,
+      "pass_rate": 0.0,
+      "refused": 0
+    },
+    "literal": {
+      "kind": "control_easy",
+      "n": 7,
+      "pass": 7,
+      "pass_rate": 1.0,
+      "refused": 0
+    },
+    "nodash": {
+      "kind": "normal",
+      "n": 6,
+      "pass": 0,
+      "pass_rate": 0.0,
+      "refused": 0
+    },
+    "quoted": {
+      "kind": "normal",
+      "n": 6,
+      "pass": 3,
+      "pass_rate": 0.5,
+      "refused": 0
+    },
+    "semver": {
+      "kind": "normal",
+      "n": 6,
+      "pass": 2,
+      "pass_rate": 0.3333333333333333,
+      "refused": 0
+    },
+    "time24": {
+      "kind": "normal",
+      "n": 7,
+      "pass": 4,
+      "pass_rate": 0.5714285714285714,
+      "refused": 0
+    },
+    "words": {
+      "kind": "normal",
+      "n": 6,
+      "pass": 1,
+      "pass_rate": 0.16666666666666666,
+      "refused": 0
+    },
+    "zip": {
+      "kind": "normal",
+      "n": 7,
+      "pass": 0,
+      "pass_rate": 0.0,
+      "refused": 0
+    }
+  },
+  "traps": {
+    "anchor": {
+      "cases": 194,
+      "error_rate": 0.03608247422680412,
+      "wrong": 7
+    },
+    "boundary": {
+      "cases": 270,
+      "error_rate": 0.1111111111111111,
+      "wrong": 30
+    },
+    "class-boundary": {
+      "cases": 98,
+      "error_rate": 0.07142857142857142,
+      "wrong": 7
+    },
+    "contradiction": {
+      "cases": 14,
+      "error_rate": 1.0,
+      "wrong": 14
+    },
+    "greedy": {
+      "cases": 24,
+      "error_rate": 0.16666666666666666,
+      "wrong": 4
+    },
+    "leading-zero": {
+      "cases": 36,
+      "error_rate": 0.3888888888888889,
+      "wrong": 14
+    },
+    "length": {
+      "cases": 101,
+      "error_rate": 0.039603960396039604,
+      "wrong": 4
+    },
+    "negation": {
+      "cases": 72,
+      "error_rate": 0.08333333333333333,
+      "wrong": 6
+    },
+    "plain": {
+      "cases": 240,
+      "error_rate": 0.14166666666666666,
+      "wrong": 34
+    },
+    "trailing-newline": {
+      "cases": 6,
+      "error_rate": 1.0,
+      "wrong": 6
+    },
+    "unicode-digit": {
+      "cases": 7,
+      "error_rate": 1.0,
+      "wrong": 7
+    },
+    "unicode-letter": {
+      "cases": 6,
+      "error_rate": 0.3333333333333333,
+      "wrong": 2
+    }
+  }
+}
