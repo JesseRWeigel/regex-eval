@@ -81,6 +81,21 @@ class TestGrade(unittest.TestCase):
         self.assertEqual(result["wrong_cases"], [])
         self.assertEqual(grade.case_level(evil, result), [])
 
+    def test_one_wrong_case_is_still_a_failure(self):
+        # This is the whole point of an executable ground truth. The pattern below is what a
+        # careful person writes, and it is wrong on exactly one of sixteen strings.
+        result = self.grade("zip", "REGEX: \\A\\d{5}(?:-\\d{4})?\\Z")
+        self.assertEqual(result["outcome"], "fail")
+        self.assertEqual(len(result["wrong_cases"]), 1)
+        self.assertTrue(result["naive_subset_pass"])
+
+    def test_a_response_that_fails_the_naive_subset_is_recorded_as_such(self):
+        result = self.grade("zip", "REGEX: .*")
+        self.assertEqual(result["outcome"], "fail")
+        self.assertFalse(result["naive_subset_pass"],
+                         "the naive subset flag must reflect the naive cases only, and a pattern "
+                         "that matches everything fails them")
+
     def test_a_silent_model_is_no_answer(self):
         self.assertEqual(self.grade("zip", "I would rather not.")["outcome"], "no_answer")
 
