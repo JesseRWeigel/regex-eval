@@ -89,7 +89,13 @@ class TestCorpora(unittest.TestCase):
                      if bool(compiled.search(case.s)) != case.match]
             self.assertTrue(wrong, f"{pattern!r} passed a corpus that must be unsatisfiable")
 
-    def test_loader_rejects_a_contradictory_normal_task(self):
+    def load_edited(self, edit):
+        """Write a copy of the real task file with `edit` applied to it and load that.
+
+        `load` raises ValueError for six different reasons, so the tests below match on the
+        message. Asserting only the type would pass on any of the other five, which is the same as
+        not testing the guard at all.
+        """
         import copy
         import json
         import os
@@ -97,18 +103,61 @@ class TestCorpora(unittest.TestCase):
         with open(tasks.TASKS_PATH, encoding="utf-8") as source:
             raw = json.load(source)
         broken = copy.deepcopy(raw)
-        victim = [entry for entry in broken["tasks"] if entry["kind"] == "normal"][0]
-        first = dict(victim["cases"][0])
-        first["match"] = not first["match"]
-        victim["cases"].append(first)
+        edit(broken)
         handle = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")
         json.dump(broken, handle)
         handle.close()
-        try:
-            with self.assertRaises(ValueError):
-                tasks.load(handle.name)
-        finally:
-            os.unlink(handle.name)
+        self.addCleanup(os.unlink, handle.name)
+        return handle.name
+
+    def test_loader_rejects_a_contradictory_normal_task(self):
+        def contradict(raw):
+            victim = [entry for entry in raw["tasks"] if entry["kind"] == "normal"][0]
+            first = dict(victim["cases"][0])
+            first["match"] = not first["match"]
+            victim["cases"].append(first)
+
+        with self.assertRaisesRegex(ValueError, "labels the same string both ways"):
+            tasks.load(self.load_edited(contradict))
+
+    def test_loader_rejects_an_impossible_control_that_is_satisfiable(self):
+        """The other half of the same guard, and the half that has no visible effect on the data.
+
+        A satisfiable impossible control still loads, still grades and still produces every number
+        in the summary, so nothing downstream can notice that the check is gone. That makes this
+        test the only thing standing between the control and quietly becoming an ordinary task.
+        """
+        def resolve(raw):
+            victim = [entry for entry in raw["tasks"] if entry["kind"] == "control_impossible"][0]
+            seen: dict = {}
+            kept = []
+            for case in victim["cases"]:
+                if case["s"] in seen and seen[case["s"]] != case["match"]:
+                    continue
+                seen[case["s"]] = case["match"]
+                kept.append(case)
+            victim["cases"] = kept
+
+        with self.assertRaisesRegex(ValueError, "an impossible control whose corpus is satisfiable"):
+            tasks.load(self.load_edited(resolve))
+
+    def test_loader_rejects_a_solvable_task_with_no_held_out_cases(self):
+        def mark_everything_naive(raw):
+            victim = [entry for entry in raw["tasks"] if entry["kind"] == "normal"][0]
+            for case in victim["cases"]:
+                case["naive"] = True
+
+        with self.assertRaisesRegex(ValueError, "every case is marked naive"):
+            tasks.load(self.load_edited(mark_everything_naive))
+
+    def test_loader_rejects_a_solvable_task_with_no_naive_cases(self):
+        def mark_nothing_naive(raw):
+            victim = [entry for entry in raw["tasks"] if entry["kind"] == "normal"][0]
+            for case in victim["cases"]:
+                case["naive"] = False
+
+        with self.assertRaisesRegex(ValueError, "no case is marked naive"):
+            tasks.load(self.load_edited(mark_nothing_naive))
 
 
 if __name__ == "__main__":
