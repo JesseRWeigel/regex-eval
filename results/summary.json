@@ -29,31 +29,31 @@
       "timeouts": 0
     },
     "gpt-oss:20b think=False": {
-      "easy_n": 1,
-      "easy_pass": 1,
+      "easy_n": 3,
+      "easy_pass": 3,
       "false_refusal": 0,
       "illusion_ci": [
-        0.04558726080970055,
-        0.6993581574175981
+        0.04970134387480073,
+        0.2806830548165022
       ],
-      "illusion_rate": 0.25,
-      "impossible_n": 1,
+      "illusion_rate": 0.125,
+      "impossible_n": 3,
       "impossible_refused": 0,
       "invalid": 0,
-      "n": 5,
-      "naive_pass_full_fail": 1,
-      "naive_subset_pass": 4,
+      "n": 36,
+      "naive_pass_full_fail": 4,
+      "naive_subset_pass": 32,
       "outcomes": {
-        "fail": 2,
-        "pass": 3
+        "fail": 8,
+        "pass": 28
       },
-      "solvable_n": 4,
-      "solvable_pass": 3,
+      "solvable_n": 33,
+      "solvable_pass": 28,
       "solvable_pass_ci": [
-        0.30064184258240184,
-        0.9544127391902995
+        0.6908012411955788,
+        0.9334954271839244
       ],
-      "solvable_pass_rate": 0.75,
+      "solvable_pass_rate": 0.8484848484848485,
       "timeouts": 0
     },
     "qwen3.5:9b think=False": {
@@ -88,166 +88,166 @@
   "meta": {
     "arms": 3,
     "corpus_cases": 168,
-    "responses": 77,
+    "responses": 108,
     "tasks": 12
   },
   "overall": {
     "illusion_ci": [
-      0.42375646526775257,
-      0.6799753582777035
+      0.3029744315621252,
+      0.5106354462310653
     ],
-    "illusion_rate": 0.5555555555555556,
-    "naive_pass_full_fail": 30,
-    "naive_subset_pass": 54,
-    "responses": 77,
-    "solvable_n": 70,
-    "solvable_pass": 24
+    "illusion_rate": 0.4024390243902439,
+    "naive_pass_full_fail": 33,
+    "naive_subset_pass": 82,
+    "responses": 108,
+    "solvable_n": 99,
+    "solvable_pass": 49
   },
   "tasks": {
     "contradiction": {
       "kind": "control_impossible",
-      "n": 7,
+      "n": 9,
       "pass": 0,
       "pass_rate": 0.0,
       "refused": 0
     },
     "decimal": {
       "kind": "normal",
-      "n": 6,
-      "pass": 3,
-      "pass_rate": 0.5,
+      "n": 9,
+      "pass": 6,
+      "pass_rate": 0.6666666666666666,
       "refused": 0
     },
     "hexcolor": {
       "kind": "normal",
-      "n": 7,
-      "pass": 4,
-      "pass_rate": 0.5714285714285714,
+      "n": 9,
+      "pass": 6,
+      "pass_rate": 0.6666666666666666,
       "refused": 0
     },
     "identifier": {
       "kind": "normal",
-      "n": 6,
-      "pass": 0,
-      "pass_rate": 0.0,
+      "n": 9,
+      "pass": 3,
+      "pass_rate": 0.3333333333333333,
       "refused": 0
     },
     "ipv4": {
       "kind": "normal",
-      "n": 6,
-      "pass": 0,
-      "pass_rate": 0.0,
+      "n": 9,
+      "pass": 1,
+      "pass_rate": 0.1111111111111111,
       "refused": 0
     },
     "literal": {
       "kind": "control_easy",
-      "n": 7,
-      "pass": 7,
+      "n": 9,
+      "pass": 9,
       "pass_rate": 1.0,
       "refused": 0
     },
     "nodash": {
       "kind": "normal",
-      "n": 6,
-      "pass": 0,
-      "pass_rate": 0.0,
+      "n": 9,
+      "pass": 2,
+      "pass_rate": 0.2222222222222222,
       "refused": 0
     },
     "quoted": {
       "kind": "normal",
-      "n": 6,
-      "pass": 3,
-      "pass_rate": 0.5,
+      "n": 9,
+      "pass": 5,
+      "pass_rate": 0.5555555555555556,
       "refused": 0
     },
     "semver": {
       "kind": "normal",
-      "n": 6,
-      "pass": 2,
-      "pass_rate": 0.3333333333333333,
+      "n": 9,
+      "pass": 5,
+      "pass_rate": 0.5555555555555556,
       "refused": 0
     },
     "time24": {
       "kind": "normal",
-      "n": 7,
-      "pass": 4,
-      "pass_rate": 0.5714285714285714,
+      "n": 9,
+      "pass": 6,
+      "pass_rate": 0.6666666666666666,
       "refused": 0
     },
     "words": {
       "kind": "normal",
-      "n": 6,
-      "pass": 1,
-      "pass_rate": 0.16666666666666666,
+      "n": 9,
+      "pass": 4,
+      "pass_rate": 0.4444444444444444,
       "refused": 0
     },
     "zip": {
       "kind": "normal",
-      "n": 7,
-      "pass": 0,
-      "pass_rate": 0.0,
+      "n": 9,
+      "pass": 2,
+      "pass_rate": 0.2222222222222222,
       "refused": 0
     }
   },
   "traps": {
     "anchor": {
-      "cases": 194,
-      "error_rate": 0.03608247422680412,
+      "cases": 270,
+      "error_rate": 0.025925925925925925,
       "wrong": 7
     },
     "boundary": {
-      "cases": 270,
-      "error_rate": 0.1111111111111111,
-      "wrong": 30
+      "cases": 387,
+      "error_rate": 0.082687338501292,
+      "wrong": 32
     },
     "class-boundary": {
-      "cases": 98,
-      "error_rate": 0.07142857142857142,
+      "cases": 135,
+      "error_rate": 0.05185185185185185,
       "wrong": 7
     },
     "contradiction": {
-      "cases": 14,
+      "cases": 18,
       "error_rate": 1.0,
-      "wrong": 14
+      "wrong": 18
     },
     "greedy": {
-      "cases": 24,
-      "error_rate": 0.16666666666666666,
+      "cases": 36,
+      "error_rate": 0.1111111111111111,
       "wrong": 4
     },
     "leading-zero": {
-      "cases": 36,
-      "error_rate": 0.3888888888888889,
+      "cases": 54,
+      "error_rate": 0.25925925925925924,
       "wrong": 14
     },
     "length": {
-      "cases": 101,
-      "error_rate": 0.039603960396039604,
+      "cases": 135,
+      "error_rate": 0.02962962962962963,
       "wrong": 4
     },
     "negation": {
-      "cases": 72,
-      "error_rate": 0.08333333333333333,
-      "wrong": 6
+      "cases": 108,
+      "error_rate": 0.06481481481481481,
+      "wrong": 7
     },
     "plain": {
-      "cases": 240,
-      "error_rate": 0.14166666666666666,
-      "wrong": 34
+      "cases": 342,
+      "error_rate": 0.10818713450292397,
+      "wrong": 37
     },
     "trailing-newline": {
-      "cases": 6,
-      "error_rate": 1.0,
-      "wrong": 6
+      "cases": 9,
+      "error_rate": 0.8888888888888888,
+      "wrong": 8
     },
     "unicode-digit": {
-      "cases": 7,
-      "error_rate": 1.0,
+      "cases": 9,
+      "error_rate": 0.7777777777777778,
       "wrong": 7
     },
     "unicode-letter": {
-      "cases": 6,
-      "error_rate": 0.3333333333333333,
+      "cases": 9,
+      "error_rate": 0.2222222222222222,
       "wrong": 2
     }
   }
