@@ -110,6 +110,14 @@ SABOTAGES = [
      '            bucket["wrong"] += int(case["wrong"])', '            bucket["wrong"] += 0',
      False),
 
+    # ---- the harness probe, which is what keeps the extractor branches measurable
+    ("the synthetic probe vector is dropped from the fingerprint", "scripts/measure.py",
+     '        "probes": [[row["id"], row["outcome"], row["pattern"]] for row in probes],',
+     '        "probes": [],', False),
+    ("a probe is graded against the wrong task", "scripts/measure.py",
+     '        graded = grade.grade(index[probe["task"]], probe["response"])',
+     '        graded = grade.grade(task_list[0], probe["response"])', False),
+
     # ---- the prompt, which is not read during re-analysis and so cannot move the fingerprint
     ("the prompt stops saying the pattern is run with re.search", "rx/prompt.py",
      "  re.fullmatch, anchor the pattern yourself if the requirement is about the whole string.",

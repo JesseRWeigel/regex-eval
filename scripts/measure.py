@@ -74,11 +74,35 @@ def build_summary(rows: list, task_list: list) -> dict:
     return summary
 
 
-def fingerprint(summary: dict, rows: list) -> str:
+PROBE_PATH = os.path.join(ROOT, "data", "harness_probe.json")
+
+
+def grade_probes(task_list: list) -> list:
+    """Grade the synthetic probe vector. Never counted in a statistic, always in the fingerprint.
+
+    The recorded models were tidy: none of them fenced an answer, quoted one, refused, or returned
+    a pattern that would not compile. Those branches of the extractor are real and are what a less
+    tidy model would hit, so without this the measurement could not move when one of them broke,
+    and a sabotage against them would clear gate 2 for free.
+    """
+    index = tasks.by_id(task_list)
+    with open(PROBE_PATH, encoding="utf-8") as handle:
+        probes = json.load(handle)["probes"]
+    rows = []
+    for probe in probes:
+        graded = grade.grade(index[probe["task"]], probe["response"])
+        rows.append({"id": probe["id"], "task": probe["task"], "expect": probe["expect"],
+                     "outcome": graded["outcome"], "pattern": graded["pattern"],
+                     "agrees": graded["outcome"] == probe["expect"]})
+    return rows
+
+
+def fingerprint(summary: dict, rows: list, probes: list = ()) -> str:
     payload = {
         "summary": summary,
         "outcomes": [[row["model"], row["think"], row["sample"], row["task"], row["outcome"],
                       row["n_wrong"], row["wrong_traps"]] for row in rows],
+        "probes": [[row["id"], row["outcome"], row["pattern"]] for row in probes],
     }
     blob = json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
@@ -141,13 +165,20 @@ def main() -> int:
         return 1
     rows = grade_all(records, task_list)
     summary = build_summary(rows, task_list)
+    probes = grade_probes(task_list)
     if not args.quiet:
         report(summary)
+        disagree = [probe for probe in probes if not probe["agrees"]]
+        print(f"\nharness probe: {len(probes) - len(disagree)} of {len(probes)} synthetic "
+              f"responses graded as expected"
+              + ("" if not disagree
+                 else "; DISAGREEMENTS: " + ", ".join(
+                     f"{p['id']} expected {p['expect']} got {p['outcome']}" for p in disagree)))
     if args.write:
         with open(SUMMARY_PATH, "w", encoding="utf-8") as handle:
             json.dump(summary, handle, indent=2, sort_keys=True, ensure_ascii=False)
             handle.write("\n")
-    print(f"FINGERPRINT {fingerprint(summary, rows)}")
+    print(f"FINGERPRINT {fingerprint(summary, rows, probes)}")
     return 0
 
 

@@ -1,0 +1,28 @@
+{
+  "note": "Synthetic responses with known correct outcomes, graded alongside the real run and folded into the fingerprint. They are never counted in any reported statistic. They exist because the recorded models happened to be tidy: not one of them fenced its answer, quoted it, refused, or emitted an uncompilable pattern, so those branches of the extractor were dead weight in the measurement and a sabotage against them could not move the fingerprint. Fabricating model responses into results/ would be dishonest; grading a clearly labelled probe vector is not.",
+  "probes": [
+    {"id": "plain", "task": "literal", "response": "REGEX: \\Acat\\Z", "expect": "pass"},
+    {"id": "fenced", "task": "literal", "response": "Sure thing.\n```\nREGEX: \\Acat\\Z\n```\n",
+     "expect": "pass"},
+    {"id": "bold-marker", "task": "literal", "response": "**REGEX:** \\Acat\\Z", "expect": "pass"},
+    {"id": "backticked", "task": "literal", "response": "REGEX: `\\Acat\\Z`", "expect": "pass"},
+    {"id": "quoted-wrapper", "task": "literal", "response": "REGEX: \"\\Acat\\Z\"",
+     "expect": "pass"},
+    {"id": "pattern-about-quotes", "task": "quoted", "response": "REGEX: \"[^\"]*\"",
+     "expect": "fail",
+     "why": "the pattern is unanchored and therefore wrong, but stripping the outer quotes would leave [^\"]*, a different pattern the model never wrote"},
+    {"id": "two-answers", "task": "literal", "response": "REGEX: cat\nOn reflection:\nREGEX: \\Acat\\Z",
+     "expect": "pass", "why": "the last line is the answer, so the corrected one counts"},
+    {"id": "refusal", "task": "zip", "response": "IMPOSSIBLE: I would rather not",
+     "expect": "refused"},
+    {"id": "refusal-then-answer", "task": "literal",
+     "response": "IMPOSSIBLE: hmm, on reflection no\nREGEX: \\Acat\\Z", "expect": "pass",
+     "why": "a model that answers has answered, whatever it said first"},
+    {"id": "uncompilable", "task": "zip", "response": "REGEX: \\A[0-9]{5}(?:-[0-9]{4}\\Z",
+     "expect": "invalid"},
+    {"id": "empty-after-marker", "task": "zip", "response": "REGEX:   ", "expect": "no_answer"},
+    {"id": "no-marker", "task": "zip", "response": "I think a regex would be unwise here.",
+     "expect": "no_answer"},
+    {"id": "unanchored", "task": "literal", "response": "REGEX: cat", "expect": "fail"}
+  ]
+}
