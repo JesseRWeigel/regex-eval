@@ -82,9 +82,14 @@ SABOTAGES = [
     ("a refusal is correct everywhere, including on solvable tasks", "rx/grade.py",
      '        result["correct"] = task.kind == "control_impossible"',
      '        result["correct"] = True', True),
+    # Filed as a plain attack rather than a dormant guard, having been run and watched. No
+    # recorded response timed out or failed to compile, so against the 108 real records this is
+    # dormant and the fingerprint does not move. It moves anyway, because the synthetic probe
+    # vector carries an invalid-pattern probe and that probe's outcome is inside the fingerprint.
+    # Which is the probe vector doing the job it exists for, so gate 2 applies here in full.
     ("a timeout is folded into the wrong-answer bucket", "rx/grade.py",
      '    if run.status != "ok":\n        result["outcome"] = run.status',
-     '    if run.status != "ok":\n        result["outcome"] = "fail"', True),
+     '    if run.status != "ok":\n        result["outcome"] = "fail"', False),
 
     # ---- the corpus, which is the ground truth itself
     ("a corpus label is flipped, so the ground truth lies", "data/tasks.json",
