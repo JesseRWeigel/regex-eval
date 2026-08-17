@@ -102,7 +102,83 @@ requires the tests to fail on each one.
 ## Status
 
 ```
-PLACEHOLDER_STATUS
+== 1. python, standard library only
+   python 3.12.3, standard library only, no model required
+   PASS
+
+== 2. the recorded run is present and complete
+   3 arms, 108 recorded responses: run-gemma4-e4b-thinkfalse.jsonl 36, run-gpt-oss-20b-thinkfalse.jsonl 36, run-qwen3.5-9b-thinkfalse.jsonl 36
+   PASS
+
+== 3. the reasoning-budget probe backs the claim made about it in the README
+   4 of 4 probe calls spent the whole token budget reasoning and returned an empty answer, and the README says so
+   PASS
+
+== 4. unit tests, including the corpus labels and the timeout guard
+Ran 72 tests in 20.430s
+
+OK
+   PASS
+
+== 5. the test count claimed in the README is still the count that exists
+   72 tests, and the README says so
+   PASS
+
+== 6. the measurement is deterministic
+   FINGERPRINT c411b86b52566b24488092fa818b3c607a77d28d67d11a75784a9c7a9a0ae640
+   PASS
+
+== 7. the committed summary is not stale against the raw records
+   summary.json reproduces exactly from 108 raw responses
+   PASS
+
+== 8. the headline number in the README is the one in the data
+   the README states 33 of 82 and 108 responses, matching the data
+   PASS
+
+== 9. sabotage suite, three gates and a null control
+  caught                  a probe is graded against the wrong task
+  caught (dormant guard)  the prompt stops saying the pattern is run with re.search
+
+25 of 25 sabotages applied, moved the measurement as expected, and were caught
+   PASS
+
+== 10. independent recount, importing nothing from rx and re-running every regex another way
+  rejected as required: probe_relative.py
+  the second scanner agrees with 8 hand written expectations
+  the second guard, an os.fork with a deadline, fired on (a+)+$
+  32 corpus labels re-derived without a regex and they agree
+  naive_pass_full_fail   summary    33  recount    33  agrees
+  naive_subset_pass      summary    82  recount    82  agrees
+  refused_impossible     summary     0  recount     0  agrees
+  solvable_n             summary    99  recount    99  agrees
+  solvable_pass          summary    49  recount    49  agrees
+  outcomes by the second route: fail 59, pass 49
+
+independent recount agrees with the committed summary
+   PASS
+
+== 11. privacy scan with planted control credentials
+   41 tracked files, 308449 bytes read, no findings; 6 planted controls all caught and a clean control stayed clean
+   PASS
+
+== 12. the published page is not stale against the data
+   docs/index.html matches a fresh build from 108 records
+   PASS
+
+== 13. the page carries numbers the build script must have produced
+   the page carries every arm score, all 12 case type counts, a title and the threats section
+   PASS
+
+== 14. the README is finished and its status matches this script
+   README has a Finding, a Status transcript and an Unfinished section, no scaffold text
+   PASS
+
+== 15. verify did not modify the tree it was verifying
+   41 tracked files unchanged
+   PASS
+
+VERIFY PASSED: regex-eval, 15 of 15 steps
 ```
 
 ## Unfinished
